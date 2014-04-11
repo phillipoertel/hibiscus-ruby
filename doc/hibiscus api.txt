@@ -1,0 +1,117 @@
+##
+## Allgemeines
+##
+
+- API Doku: https://localhost:8080/webadmin/rest.html
+- Request base: /webadmin/rest/hibiscus
+- curl -k -u 'admin:PASSWORD' https://localhost:8080/webadmin/rest/PATH
+
+
+##
+## Ressourcen
+##
+/jobs/list                        aktuelle Sync-Aufgaben
+/konto/list                       Informationen über die Konten
+/ueberweisung/delete/{id}         lösche Überweisung mit +id+
+/ueberweisung/list/open           offene Überweisungen
+/ueberweisung/create              Überweisung erstellen (GET oder POST). Parameter siehe Überweisung unten
+/umsaetze/query/{term}            Umsätze mit +term+ suchen
+/konto/{konto-id}/umsaetze/days/{days} Umsätze für Hibiscus {konto-id} in den letzten {days} Tagen
+
+# Ruby API Draft
+Jobs#unsynched
+Account#all
+Transfer
+  #delete
+  #pending
+  #create
+StatementLines
+  #search
+  #latest(account, days)
+
+Account
+  #info
+  -> transfer(s)
+  -> statement_line(s)
+
+##
+## Datenstrukturen
+##
+
+# Buchung
+
+{
+  "art": "Lastschrifteinzug",
+  "betrag": "-453.14",
+  "checksum": "2135929106",
+  "customerref": "NONREF",
+  "datum": "2014-03-27",
+  "empfaenger_blz": "BYLADEM1001",
+  "empfaenger_konto": "DE63120300009005290334",
+  "empfaenger_name": "ABRECHNUNG LUFTHANSA CARD",
+  "gvcode": "005",
+  "id": "127",
+  "konto_id": "2",
+  "primanota": "006220",
+  "saldo": "3952.99",
+  "valuta": "2014-03-27",
+  "zweck": "EREF+992005594515214",
+  "zweck2": "MREF+DKBLHPO0000000172466",
+  "zweck3": "CRED+DE98DKB00000000048\nSVWZ+KARTEN NR. 99200559451\n5214 LH57538284 453,14\n"
+},
+
+# Überweisung (POST-Daten)
+
+betrag: Betrag im Format 000,00 (Komma als Dezimaltrennzeichen)
+blz: Bankleitzahl des Gegenkontos
+name: Inhaber-Name des Gegenkontos
+konto: Kontonummer des Gegenkontos
+konto_id: ID des eigenen Kontos
+zweck: Verwendungszweck Zeile 1
+--- optional: ---
+zweck2: optional: Verwendungszweck Zeile 2
+zweck3: optional: Verwendungszweck Zeile 3
+zweck{nr}: optional: Weitere Verwendungszweck-Zeilen
+termin: optional: "true" wenn die Überweisung als Termin-Überweisung ausgeführt werden soll
+textschluessel: optional: Textschlüssel (Nummer)
+umbuchung: optional: "true" wenn der Auftrag als Bank-interne Umbuchung ausgeführt werden soll
+datum: optional: Ausführungstermin im Format TT.MM.JJJJ
+
+# Konto
+
+{
+	"bezeichnung": "XY-Konto",
+	"bic": "...",
+	"blz": "...",
+	"iban": "...",
+	"id": "1",
+	"kontonummer": "...",
+	"kundennummer": "...",
+	"name": "NACHNAME, VORNAME",
+	"passport_class": "de.willuhn.jameica.hbci.passports.pintan.server.PassportImpl",
+	"saldo": "42.42",
+	"saldo_datum": "2014-04-11 23:36:59.0",
+	"waehrung": "EUR"
+}
+
+# Sync-Job
+
+{
+  "class": "class de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJobKontoauszug",
+  "konto": "1",
+  "name": "Extra-Konto, Kto. 554xxx [Bankname]: Ums�tze/Salden abrufen"
+}
+
+# Create Überweisung response
+
+{
+  "ausgefuehrt"=>"0", 
+  "betrag"=>"0.01", 
+  "empfaenger_blz"=>"50010517", 
+  "empfaenger_konto"=>"5546169034", 
+  "empfaenger_name"=>"Phillip Oertel", 
+  "id"=>"1", 
+  "konto_id"=>"2", 
+  "termin"=>"Sat Apr 12 00:41:45 CEST 2014", 
+  "zweck"=>"Hibiscus Test"
+}
