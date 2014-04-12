@@ -73,15 +73,15 @@ describe "Hibiscus::Client" do
       end
     end
 
-  describe "post" do
-    context "path /path requested" do
-      it "does a get on the http_lib" do
-        data = {hello: "world"}
-        client.http_lib.should_receive(:post).with('/path', {body: data}).and_return('{}')
-        client.post('/path', data)
+    describe "post" do
+      context "path /path requested" do
+        it "does a get on the http_lib, passes data as body" do
+          data = {hello: "world"}
+          client.http_lib.should_receive(:post).with('/path', {body: data}).and_return('{}')
+          client.post('/path', data)
+        end
       end
     end
-  end
 
   end
 
