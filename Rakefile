@@ -5,7 +5,8 @@ require_relative 'lib/account'
 require_relative 'lib/statement_lines'
 
 task :default do
-  puts StatementLines.new(ENV['PASSWORD']).search("paypal")
+  new_booking = StatementLines.new(ENV['PASSWORD']).search("paypal")
+  
 end
 
 task :book do

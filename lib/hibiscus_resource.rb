@@ -23,19 +23,9 @@ class HibiscusResource
       JSON.parse(json)
     end
     
-    def post(path, data)
-      json = self.class.post(path, request_options.merge(body: data))
+    def post(path, body)
+      json = self.class.post(path, request_options.merge(body: body))
       JSON.parse(json)
     end
   
-    def request_options
-      {
-        verify: false, # no SSL cert check
-        basic_auth: {
-          :username => "admin", 
-          :password => @password
-        }
-      }
-    end
-
 end
