@@ -10,8 +10,11 @@ module Hibiscus
     include Singleton
 
     def get(path, options = {})
-      json = http_lib.get(request_uri(path), request_options.merge(options))
-      JSON.parse(json)
+      http_request(:get, path, options)
+    end
+
+    def post(path, body = {})
+      http_request(:post, path, {body: body})
     end
 
     def http_lib
@@ -23,6 +26,11 @@ module Hibiscus
     end
 
     private
+
+      def http_request(method, path, options)
+        json = http_lib.send(method, request_uri(path), request_options.merge(options))
+        JSON.parse(json)
+      end
 
       def request_uri(path)
         @config[:base_uri] ? URI.join(@config[:base_uri], path).to_s : path

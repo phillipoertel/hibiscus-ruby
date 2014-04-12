@@ -5,6 +5,7 @@ describe "Hibiscus::Client" do
   
   let(:client) { Hibiscus::Client.instance }
 
+  # client is the same instance for all tests in this process 
   before(:each) { client.config = {} }
 
   it "is a singleton" do
@@ -15,7 +16,6 @@ describe "Hibiscus::Client" do
   describe "configuration" do
 
     context "setting username and password" do
-
       it "passes them as basic auth to requests" do
         config           = {:username => "admin", :password => "password" }
         expected_options = {basic_auth: config}
@@ -23,7 +23,6 @@ describe "Hibiscus::Client" do
         client.config = config
         client.get('/path')
       end
-
     end
 
     context "setting verify" do
@@ -39,6 +38,15 @@ describe "Hibiscus::Client" do
         client.get('/path')
       end
     end
+
+    context "setting base_uri" do
+      it "prefixes the requests with it" do
+        client.config = {base_uri: "http://hello-world.org"}
+        client.http_lib.should_receive(:get).with('http://hello-world.org/home', {}).and_return("{}")
+        client.get("/home")
+      end
+    end
+
   end
 
   describe "response parsing" do
@@ -55,13 +63,26 @@ describe "Hibiscus::Client" do
   end
 
   describe "requests" do
-    context "base_uri configured" do
-      it "prefixes the requests with it" do
-        client.config = {base_uri: "http://hello-world.org"}
-        client.http_lib.should_receive(:get).with('http://hello-world.org/home', {}).and_return("{}")
-        client.get("/home")
+
+    describe "get" do
+      context "path /path requested" do
+        it "does a get on the http_lib" do
+          client.http_lib.should_receive(:get).with('/path', {}).and_return('{}')
+          client.get('/path')
+        end
+      end
+    end
+
+  describe "post" do
+    context "path /path requested" do
+      it "does a get on the http_lib" do
+        data = {hello: "world"}
+        client.http_lib.should_receive(:post).with('/path', {body: data}).and_return('{}')
+        client.post('/path', data)
       end
     end
   end
-  
+
+  end
+
 end
