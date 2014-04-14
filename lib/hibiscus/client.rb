@@ -3,6 +3,7 @@ require 'httparty'
 require 'json'
 
 module Hibiscus
+  
   class Client
 
     attr_writer :config
@@ -28,12 +29,19 @@ module Hibiscus
     private
 
       def http_request(method, path, options)
-        json = http_lib.send(method, request_uri(path), request_options.merge(options))
+        uri = request_uri(path)
+        puts "#{method.upcase} #{uri}" # TODO remove
+        json = http_lib.send(method, uri, request_options.merge(options))
         JSON.parse(json)
       end
 
       def request_uri(path)
-        @config[:base_uri] ? URI.join(@config[:base_uri], path).to_s : path
+        if @config[:base_uri] 
+          # URI.join wasn't helpful here, unfortunately (it removes the path component on base_uri)
+          [@config[:base_uri].gsub(/\/?\Z/, ''), path.gsub(/\A\/?/, '')].join('/')
+        else
+          path
+        end
       end
 
       def request_options

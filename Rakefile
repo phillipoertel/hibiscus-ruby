@@ -1,22 +1,36 @@
-require_relative 'lib/hibiscus_resource'
-require_relative 'lib/transfer'
-require_relative 'lib/jobs'
-require_relative 'lib/account'
-require_relative 'lib/statement_lines'
+$LOAD_PATH << 'lib'
 
-task :default do
-  new_booking = StatementLines.new(ENV['PASSWORD']).search("paypal")
-  
+require 'hibiscus/account'
+require 'hibiscus/statement_lines'
+require 'hibiscus/jobs'
+require 'hibiscus/transfer'
+
+task :configure_client do
+  Hibiscus::Client.instance.config = { 
+    username: ENV['USERNAME'] || 'admin',
+    password: ENV['PASSWORD'],
+    verify:   false,
+    base_uri: 'https://localhost:8080/webadmin/rest/hibiscus'
+  }
 end
 
-task :book do
+task default: :configure_client do
+  #p Hibiscus::Account.new.all
+  #p Hibiscus::Jobs.new.pending
+  #p Hibiscus::Transfer.new.delete(2) # interne überweisungs-id verwenden
+  #p Hibiscus::Transfer.new.pending
+  #p Hibiscus::StatementLines.new.search('paypal')
+  p Hibiscus::StatementLines.new.latest(2, 5)
+end
+
+task book: :configure_client do
   data = {
     betrag: "0,01",
-    blz: "123", # Bankleitzahl des Gegenkontos
-    konto: "456", # Kontonummer des Gegenkontos
+    blz: "38070724", # Bankleitzahl des Gegenkontos
+    konto: "321487100", # Kontonummer des Gegenkontos
     name: "Phillip Oertel", # Inhaber-Name des Gegenkontos
     konto_id: "2", # ID des eigenen Kontos
     zweck: "Hibiscus Test", # Verwendungszweck Zeile 1
   }
-  #puts @client.post(data)
+  p Hibiscus::Transfer.new.create(data)
 end

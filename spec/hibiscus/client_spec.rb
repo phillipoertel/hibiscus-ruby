@@ -46,6 +46,20 @@ module Hibiscus
           client.http_lib.should_receive(:get).with('http://hello-world.org/home', {}).and_return("{}")
           client.get("/home")
         end
+        it "preserves the path on the base_uri when present" do
+          client.config = {base_uri: "http://hello-world.org/foo/bar"}
+          client.http_lib.should_receive(:get).with('http://hello-world.org/foo/bar/home', {}).and_return("{}")
+          client.get("/home")
+        end
+        it "fixes double slashes" do
+          client.config = {base_uri: "http://hello-world.org/foo/bar/"}
+          client.http_lib.should_receive(:get).with('http://hello-world.org/foo/bar/home', {}).and_return("{}")
+          client.get("/home")
+        end
+        it "uses the url as-is when base_uri is unset" do
+          client.http_lib.should_receive(:get).with('http://hello-world.org/foo', {}).and_return("{}")
+          client.get("http://hello-world.org/foo")
+        end
       end
 
     end
