@@ -45,17 +45,14 @@ module Hibiscus
       end
 
       def request_options
-        options = {}
-        options[:verify] = config[:verify] unless config[:verify].nil? # no SSL cert check
-        if config[:username]
-          options[:basic_auth] ||= {}
-          options[:basic_auth][:username] = config[:username]
+        {}.tap do |options|
+          options[:verify] = config[:verify] if config[:verify] # no SSL cert check if set to false
+          if (config[:username] || config[:password])
+            options[:basic_auth] = {}
+            options[:basic_auth][:username] = config[:username] if config[:username]
+            options[:basic_auth][:password] = config[:password] if config[:password]
+          end
         end
-        if config[:password]
-          options[:basic_auth] ||= {}
-          options[:basic_auth][:password] = config[:password]
-        end
-        options
       end
 
   end
