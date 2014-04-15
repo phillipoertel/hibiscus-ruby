@@ -47,7 +47,7 @@ module Hibiscus
           client.get('/path')
         end
         it "passes it as-is" do
-          config           = {verify: false}
+          config           = {verify: "123"}
           expected_options = config
           client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
           client.config = config
