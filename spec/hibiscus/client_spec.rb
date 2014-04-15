@@ -3,11 +3,10 @@ require 'hibiscus/client'
 
 module Hibiscus
   describe Client do
-  
-    let(:client) { Hibiscus::Client.instance }
 
-    # client is the same instance for all tests in this process 
-    before(:each) { client.config = {} }
+    # I'm using .new here so I don't have to reset the config for every test run
+    # (which I would have to when using .instance) 
+    let(:client) { Hibiscus::Client.send(:new) }
 
     it "is a singleton" do
       Hibiscus::Client.instance.should == Hibiscus::Client.instance
@@ -16,9 +15,25 @@ module Hibiscus
 
     describe "configuration" do
 
-      context "setting username and password" do
-        it "passes them as basic auth to requests" do
-          config           = {:username => "admin", :password => "password" }
+      context "not set at all" do
+        it "is initialized as an empty hash" do
+          client.config.should == {}
+        end
+      end
+
+      context "setting username" do
+        it "passes it as basic auth to requests" do
+          config           = {:username => "admin"}
+          expected_options = {basic_auth: config}
+          client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
+          client.config = config
+          client.get('/path')
+        end
+      end
+
+      context "setting password" do
+        it "passes it as basic auth to requests" do
+          config           = {:password => "password" }
           expected_options = {basic_auth: config}
           client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
           client.config = config
@@ -89,12 +104,28 @@ module Hibiscus
       end
 
       describe "post" do
-        context "path /path requested" do
-          it "does a get on the http_lib, passes data as body" do
+        context "no POST data given" do
+          it "doesen't pass body" do
+            client.http_lib.should_receive(:post).with('/path', {body: {}}).and_return('{}')
+            client.post('/path')
+          end
+        end
+        context "POST data given" do
+          it "passes data as body" do
             data = {hello: "world"}
             client.http_lib.should_receive(:post).with('/path', {body: data}).and_return('{}')
             client.post('/path', data)
           end
+        end
+      end
+
+      describe "#http_lib" do
+        it "defaults to the HTTParty library" do
+          client.http_lib.should == HTTParty
+        end
+        it "can be overridden" do
+          client.config = {http_lib: Object}
+          client.http_lib.should == Object
         end
       end
 
