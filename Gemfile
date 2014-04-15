@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem 'rake'
 gem 'httparty'
 gem 'rspec'
 

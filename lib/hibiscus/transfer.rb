@@ -10,7 +10,6 @@ module Hibiscus
       create:  '/ueberweisung/create'
     }
 
-    # FIXME does not work yet
     def delete(id)
       get(PATHS[:delete].gsub('{id}', id.to_s))
     end
