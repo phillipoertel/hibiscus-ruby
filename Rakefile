@@ -5,6 +5,12 @@ require 'hibiscus/statement_lines'
 require 'hibiscus/jobs'
 require 'hibiscus/transfer'
 
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec
+
 task :configure_client do
   Hibiscus::Client.instance.config = { 
     username: ENV['USERNAME'] || 'admin',
@@ -14,7 +20,7 @@ task :configure_client do
   }
 end
 
-task default: :configure_client do
+task test_get: :configure_client do
   #p Hibiscus::Account.new.all
   #p Hibiscus::Jobs.new.pending
   #p Hibiscus::Transfer.new.delete(2) # interne überweisungs-id verwenden
@@ -23,7 +29,7 @@ task default: :configure_client do
   p Hibiscus::StatementLines.new.latest(2, 5)
 end
 
-task book: :configure_client do
+task test_post: :configure_client do
   data = {
     betrag: "0,01",
     blz: "38070724", # Bankleitzahl des Gegenkontos
