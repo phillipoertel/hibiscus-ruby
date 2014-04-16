@@ -20,3 +20,4 @@ It will be able to create bookings, and read and search statement lines.
 - implement FakeParty (alternative HTTP library usable for debugging / )
 - set up nice references, like Account.find(1).statement_lines
 - convert server errors (Java Exceptions) into corresponding Ruby exceptions
+- 
