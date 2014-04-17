@@ -29,9 +29,10 @@ module Hibiscus
     private
 
       def http_request(method, path, options)
-        uri = request_uri(path)
+        uri     = request_uri(path)
+        options = request_options.merge(options)
         #puts "#{method.upcase} #{uri}" # TODO remove
-        json = http_lib.public_send(method, uri, request_options.merge(options))
+        json = http_lib.public_send(method, uri, options)
         JSON.parse(json)
       end
 
@@ -46,7 +47,7 @@ module Hibiscus
 
       def request_options
         {}.tap do |options|
-          options[:verify] = config[:verify] if config[:verify] # no SSL cert check if set to false
+          options[:verify] = !!config[:verify] if config.has_key?(:verify) # no SSL cert check if set to false
           if (config[:username] || config[:password])
             options[:basic_auth] = {}
             options[:basic_auth][:username] = config[:username] if config[:username]

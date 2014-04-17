@@ -46,9 +46,30 @@ module Hibiscus
           client.http_lib.should_receive(:get).with('/path', {}).and_return("{}")
           client.get('/path')
         end
-        it "passes it as-is" do
-          config           = {verify: "123"}
-          expected_options = config
+        it "verify: false sets false" do
+          config           = {verify: false}
+          expected_options = {verify: false}
+          client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
+          client.config = config
+          client.get('/path')
+        end
+        it "verify: nil sets false" do
+          config           = {verify: nil}
+          expected_options = {verify: false}
+          client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
+          client.config = config
+          client.get('/path')
+        end
+        it "verify: true sets true" do
+          config           = {verify: true}
+          expected_options = {verify: true}
+          client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
+          client.config = config
+          client.get('/path')
+        end
+        it "unset doesn't set" do
+          config           = {}
+          expected_options = {}
           client.http_lib.should_receive(:get).with('/path', expected_options).and_return("{}")
           client.config = config
           client.get('/path')
