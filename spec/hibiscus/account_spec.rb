@@ -46,7 +46,7 @@ module Hibiscus
         first.holder_name.should == "MUSTERMANN, MAX"
         first.balance.cents.should == -10001
         first.balance.currency.should == "EUR"
-        first.balance_date.to_s.should == "2014-04-17 09:10:50 +0200"
+        first.balance_date.should == Time.parse("2014-04-17 09:10:50.0")
         first.should be_valid
       end
     end
