@@ -1,4 +1,4 @@
-require 'hibiscus-ruby/resource'
+require 'hibiscus/resource'
 
 module Hibiscus
   

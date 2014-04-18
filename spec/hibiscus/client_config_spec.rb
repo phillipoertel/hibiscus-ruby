@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'hibiscus-ruby/client_config'
+require 'hibiscus/client_config'
 
 module Hibiscus
   describe Client::Config do
