@@ -1,3 +1,6 @@
+require 'hibiscus/client_config'
+require 'hibiscus/client'
+require 'hibiscus/resource'
 require 'hibiscus/account'
 require 'hibiscus/statement_lines'
 require 'hibiscus/jobs'

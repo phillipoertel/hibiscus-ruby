@@ -1,5 +1,3 @@
-require 'hibiscus/resource'
-
 module Hibiscus
   
   class StatementLines < Resource
