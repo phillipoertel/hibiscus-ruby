@@ -1,9 +1,15 @@
 hibiscus-ruby is a Ruby API client for the HBCI-compliant Hibiscus payment server (http://www.willuhn.de/products/hibiscus-server).
 It will be able to create bookings, and read and search statement lines.
 
-### Mutation testing example (all methods of Hibiscus::Client)
+### Running the tests
 
-> mutant --include lib --require hibiscus/client --use rspec --fail-fast Hibiscus::Client
+rspec unit tests: 
+
+> rake
+
+Mutation tests (using [mutant](https://github.com/mbj/mutant)):
+
+> rake spec:mutation
 
 ### Travis build status
 
@@ -12,11 +18,14 @@ It will be able to create bookings, and read and search statement lines.
 ### Todos
 
 - make it a gem
-- figure out why Transfer#create doesn't work yet
-- make Transfer#create nicer (Terminüberweisung)
-- add sanity checks to Transfer#create
 - clean up resources and write unit tests
 - write integration tests against the Hibiscus server
-- implement FakeParty (alternative HTTP library usable for debugging / )
 - set up nice references, like Account.find(1).statement_lines
+- make Transfer#create nicer (Terminüberweisung)
+- add sanity checks to Transfer#create
 - convert server errors (Java Exceptions) into corresponding Ruby exceptions
+- implement FakeParty (alternative HTTP library usable for debugging / )
+
+### Done
+
+- figure out why Transfer#create doesn't work yet (Hibiscus Server doesn't do them with PIN/TAN)
