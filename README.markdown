@@ -47,6 +47,10 @@ Mutation tests (using [mutant](https://github.com/mbj/mutant)):
 
 [![Build Status](https://travis-ci.org/phillipoertel/hibiscus-ruby.svg)](https://travis-ci.org/phillipoertel/hibiscus-ruby)
 
+### License
+
+Released under the [MIT License](http://opensource.org/licenses/MIT).
+
 ### Todos
 
 - make it a gem
@@ -61,3 +65,4 @@ Mutation tests (using [mutant](https://github.com/mbj/mutant)):
 
 - figure out why Transfer#create doesn't work yet (Hibiscus Server doesn't do them with PIN/TAN)
 - document how to use the client and set default config
+
