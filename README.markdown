@@ -24,7 +24,6 @@ Mutation tests (using [mutant](https://github.com/mbj/mutant)):
 - make Transfer#create nicer (Terminüberweisung)
 - add sanity checks to Transfer#create
 - convert server errors (Java Exceptions) into corresponding Ruby exceptions
-- implement FakeParty (alternative HTTP library usable for debugging / )
 
 ### Done
 
