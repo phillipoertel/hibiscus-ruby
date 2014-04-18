@@ -1,7 +1,7 @@
 require 'singleton'
 require 'httparty'
 require 'json'
-require 'hibiscus/client_config'
+require 'hibiscus-ruby/client_config'
 
 module Hibiscus
   
