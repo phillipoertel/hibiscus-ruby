@@ -1,12 +1,13 @@
 require 'singleton'
 require 'httparty'
 require 'json'
+require 'hibiscus/client_config'
 
 module Hibiscus
   
   class Client
 
-    attr_writer :config
+    attr_reader :config
 
     include Singleton
 
@@ -19,18 +20,27 @@ module Hibiscus
     end
 
     def http_lib
-      config[:http_lib] || HTTParty
+      HTTParty
     end
 
-    def config
-      @config || {}
+    def config=(options)
+      @config = Config.generate(options)
+    end
+
+    # allows Hibiscus::Client.config = ...
+    def self.config=(config)
+      instance.config = config
+    end
+
+    def self.config
+      instance.config
     end
 
     private
 
       def http_request(method, path, options)
         uri     = request_uri(path)
-        options = request_options.merge(options)
+        options = config.merge(options)
         #puts "#{method.upcase} #{uri}" # TODO remove
         json = http_lib.public_send(method, uri, options)
         JSON.parse(json)
@@ -42,17 +52,6 @@ module Hibiscus
           [config[:base_uri].sub(/\/?\Z/, ''), path.sub(/\A\/?/, '')].join('/')
         else
           path
-        end
-      end
-
-      def request_options
-        {}.tap do |options|
-          options[:verify] = !!config[:verify] if config.has_key?(:verify) # no SSL cert check if set to false
-          if (config[:username] || config[:password])
-            options[:basic_auth] = {}
-            options[:basic_auth][:username] = config[:username] if config[:username]
-            options[:basic_auth][:password] = config[:password] if config[:password]
-          end
         end
       end
 

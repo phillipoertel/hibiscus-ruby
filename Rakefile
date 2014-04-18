@@ -1,10 +1,6 @@
 $LOAD_PATH << 'lib'
 
-require 'hibiscus/account'
-require 'hibiscus/statement_lines'
-require 'hibiscus/jobs'
-require 'hibiscus/transfer'
-
+require 'hibiscus-ruby'
 require 'rspec/core/rake_task'
 
 task :default => "spec:rspec"
@@ -37,12 +33,7 @@ end
 namespace :examples do
 
   task :configure_client do
-    Hibiscus::Client.instance.config = { 
-      username: ENV['USERNAME'] || 'admin',
-      password: ENV['PASSWORD'],
-      verify:   false,
-      base_uri: 'https://localhost:8080/webadmin/rest/hibiscus'
-    }
+    Hibiscus::Client.config = { password: ENV['PASSWORD'] }
   end
 
   desc "An example GET request"
