@@ -43,9 +43,10 @@ Mutation tests (using [mutant](https://github.com/mbj/mutant)):
 
 > rake spec:mutation
 
-### Travis build status
+### Travis build status and Gem badge
 
 [![Build Status](https://travis-ci.org/phillipoertel/hibiscus-ruby.svg)](https://travis-ci.org/phillipoertel/hibiscus-ruby)
+[![Gem Version](https://badge.fury.io/rb/hibiscus-ruby.svg)](http://badge.fury.io/rb/hibiscus-ruby)
 
 ### License
 
