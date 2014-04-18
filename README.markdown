@@ -54,7 +54,6 @@ Released under the [MIT License](http://opensource.org/licenses/MIT).
 
 ### Todos
 
-- make it a gem
 - clean up resources and write unit tests
 - write integration tests against the Hibiscus server
 - set up nice references, like Account.find(1).statement_lines
@@ -66,4 +65,5 @@ Released under the [MIT License](http://opensource.org/licenses/MIT).
 
 - figure out why Transfer#create doesn't work yet (Hibiscus Server doesn't do them with PIN/TAN)
 - document how to use the client and set default config
+- make it a gem
 

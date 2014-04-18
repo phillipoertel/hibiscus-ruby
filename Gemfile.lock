@@ -2,13 +2,24 @@ PATH
   remote: .
   specs:
     hibiscus-ruby (0.1.0.pre)
+      activemodel
       httparty
+      money
       rake
 
 GEM
   remote: https://rubygems.org/
   specs:
     abstract_type (0.0.7)
+    activemodel (4.1.0)
+      activesupport (= 4.1.0)
+      builder (~> 3.1)
+    activesupport (4.1.0)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
     adamantium (0.2.0)
       ice_nine (~> 0.11.0)
       memoizable (~> 0.4.0)
@@ -17,6 +28,7 @@ GEM
       adamantium (~> 0.1)
       equalizer (~> 0.0.8)
     ast (1.1.0)
+    builder (3.2.2)
     concord (0.1.4)
       adamantium (~> 0.1)
       equalizer (~> 0.0.7)
@@ -25,11 +37,15 @@ GEM
     httparty (0.13.1)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
+    i18n (0.6.9)
     ice_nine (0.11.0)
     inflecto (0.0.2)
     json (1.8.1)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
+    minitest (5.3.3)
+    money (6.1.1)
+      i18n (~> 0.6.4)
     morpher (0.2.2)
       abstract_type (~> 0.0.7)
       adamantium (~> 0.2.0)
@@ -61,7 +77,7 @@ GEM
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
     procto (0.0.2)
-    rake (10.2.2)
+    rake (10.3.1)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -72,6 +88,8 @@ GEM
     rspec-mocks (2.14.6)
     slop (3.5.0)
     thread_safe (0.3.3)
+    tzinfo (1.1.0)
+      thread_safe (~> 0.1)
     unparser (0.1.12)
       abstract_type (~> 0.0.7)
       adamantium (~> 0.2.0)

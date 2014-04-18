@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(spec)/})
   gem.require_path  = "lib"
 
-  %w(rake httparty).each do |g|
+  %w(rake httparty activemodel money).each do |g|
     gem.add_runtime_dependency g
   end
 
