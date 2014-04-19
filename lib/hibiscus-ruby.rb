@@ -1,5 +1,6 @@
 require 'hibiscus/client/config'
 require 'hibiscus/client'
+require 'hibiscus/money_string_parser'
 require 'hibiscus/resource'
 require 'hibiscus/account'
 require 'hibiscus/statement_line'

@@ -1,3 +1,4 @@
+require 'hibiscus/money_string_parser'
 require 'hibiscus/account/validator'
 
 module Hibiscus
@@ -24,7 +25,8 @@ module Hibiscus
 
           if attrs["saldo"]
             # we rely on hibiscus server passing the saldo in the format "[-]100.50"
-            mapped_attrs[:balance]       = Money.new(attrs["saldo"].sub('.', ''), attrs["waehrung"])
+            cents = MoneyStringParser.to_cents(attrs["saldo"])
+            mapped_attrs[:balance]       = Money.new(cents, attrs["waehrung"])
           end
 
           if attrs["saldo_datum"]

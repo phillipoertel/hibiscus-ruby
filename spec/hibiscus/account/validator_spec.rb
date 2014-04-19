@@ -17,32 +17,36 @@ module Hibiscus
       end
     end    
 
-    let(:valid_api_response) do
-      {
-        label: "Magic-Konto", 
-        bic: "MYBANKXXXXX", 
-        blz: "12345678", 
-        iban: "AA12345678901234567890", 
-        id:  1, 
-        customer_number: "47114711", 
-        holder_name: "MUSTERMANN, MAX", 
-        balance:  Money.new("-100.01", "EUR"), 
-        balance_date: "2014-04-17 09:10:50.0"
+    let(:valid_attrs) do
+      valid_api_response = {
+        "bezeichnung"=>"Magic-Konto", 
+        "bic"=>"MYBANKXXXXX", 
+        "blz"=>"12345678", 
+        "iban"=>"AA12345678901234567890", 
+        "id"=>"1", 
+        "kontonummer"=>"1234567890", 
+        "kundennummer"=>"47114711", 
+        "name"=>"MUSTERMANN, MAX", 
+        "passport_class"=>"de.willuhn.jameica.hbci.passports.pintan.server.PassportImpl", 
+        "saldo"=>"-100.01", 
+        "saldo_datum"=>"2014-04-17 09:10:50.0", 
+        "waehrung"=>"EUR"
       }
+      Account.map_response_data(valid_api_response)
     end
 
-    context "correct api data given" do
-      let(:api_response) { valid_api_response}
+    context "correct API data given" do
+      let(:attrs) { valid_attrs }
       it "is valid" do
-        validator = Account::Validator.new(api_response)
+        validator = Account::Validator.new(attrs)
         validator.should be_valid, validator.errors.messages
       end
     end
 
     context "BIC with 9 characters given (invalid)" do
-      let(:api_response) { r = valid_api_response.dup; r[:bic] = "ABCABCABC"; r }
+      let(:attrs) { r = valid_attrs.dup; r[:bic] = "ABCABCABC"; r }
       it "is invalid" do
-        validator = Account::Validator.new(api_response)
+        validator = Account::Validator.new(attrs)
         validator.should_not be_valid
         validator.errors.messages.should == {:bic=>["BIC must be 8 or 11 characters in the range A-Z"]}
       end
