@@ -40,7 +40,6 @@ module Hibiscus
       def http_request(method, path, options)
         uri     = request_uri(path)
         options = config.merge(options)
-        #puts "#{method.upcase} #{uri}" # TODO remove
         json = http_lib.public_send(method, uri, options)
         JSON.parse(json)
       end

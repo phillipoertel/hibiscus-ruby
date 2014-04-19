@@ -16,7 +16,6 @@ module Hibiscus
       get(PATHS[:pending])
     end
 
-    # FIXME does not work yet
     def create(data)
       post(PATHS[:create], data)
     end

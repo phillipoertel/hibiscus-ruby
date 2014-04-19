@@ -17,9 +17,8 @@ module Hibiscus
       end
     end    
 
-    it "works" do
-      # FIXME use attributes mapped by account here.
-      attrs = {
+    let(:valid_api_response) do
+      {
         label: "Magic-Konto", 
         bic: "MYBANKXXXXX", 
         blz: "12345678", 
@@ -30,8 +29,24 @@ module Hibiscus
         balance:  Money.new("-100.01", "EUR"), 
         balance_date: "2014-04-17 09:10:50.0"
       }
-      validator = Account::Validator.new(attrs)
-      validator.should be_valid, validator.errors.messages
     end
+
+    context "correct api data given" do
+      let(:api_response) { valid_api_response}
+      it "is valid" do
+        validator = Account::Validator.new(api_response)
+        validator.should be_valid, validator.errors.messages
+      end
+    end
+
+    context "BIC with 9 characters given (invalid)" do
+      let(:api_response) { r = valid_api_response.dup; r[:bic] = "ABCABCABC"; r }
+      it "is invalid" do
+        validator = Account::Validator.new(api_response)
+        validator.should_not be_valid
+        validator.errors.messages.should == {:bic=>["BIC must be 8 or 11 characters in the range A-Z"]}
+      end
+    end
+
   end
 end

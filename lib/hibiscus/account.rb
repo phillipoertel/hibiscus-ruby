@@ -4,6 +4,8 @@ module Hibiscus
   
   class Account < Resource
 
+    class InvalidResponseData < StandardError; end
+
     attr_reader :attrs
 
     class << self
@@ -17,6 +19,7 @@ module Hibiscus
         mapped_attrs[:iban]             = attrs["iban"]
         mapped_attrs[:customer_number]  = attrs["kundennummer"]
         mapped_attrs[:holder_name]      = attrs["name"]
+
         if attrs["saldo"]
           # we rely on hibiscus server passing the saldo in the format "[-]100.50"
           mapped_attrs[:balance]          = Money.new(attrs["saldo"].sub('.', ''), attrs["waehrung"])
@@ -24,8 +27,13 @@ module Hibiscus
         if attrs["saldo_datum"]
           mapped_attrs[:balance_date]     = Time.parse(attrs["saldo_datum"])
         end
-        new(mapped_attrs)
-        # TODO ensure data is valid!
+
+        object = new(mapped_attrs)
+        if object.valid?
+          object
+        else
+          raise InvalidResponseData, object.errors.messages
+        end
       end
 
       def requests
@@ -41,13 +49,19 @@ module Hibiscus
     end
 
     def valid?
-      Validator.new(@attrs).valid?
+      @validator = Validator.new(@attrs)
+      @validator.valid?
+    end
+
+    def errors
+      @validator ? @validator.errors : []
     end
 
     def path_for(action)
       self.class.requests[action]
     end
 
+    # FIXME make this a class method
     def all
       response = get(path_for(:all))
       response.map { |attrs| self.class.new_from_response(attrs) }

@@ -13,11 +13,18 @@ module Hibiscus
         end
       end
 
+      class BicValidator < ActiveModel::EachValidator
+        def validate_each(record, attribute, value)
+          unless value && (value.match(/\A[A-Z]{8}\z/) || value.match(/\A[A-Z]{11}\z/))
+            record.errors.add attribute, "BIC must be 8 or 11 characters in the range A-Z"
+          end
+        end
+      end
+
       validates :id, numericality: true
       validates :id, inclusion: (1..1_000)
 
-      # TODO it's actually 8 OR 11 chars, not within.
-      validates :bic, format: /\A[A-Z]{8,11}\z/
+      validates :bic, bic: true
 
       # simple IBAN format check taken from http://goo.gl/xsNXen:
       # - the leading two characters must be letters, the rest numbers
