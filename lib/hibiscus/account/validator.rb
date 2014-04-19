@@ -21,8 +21,10 @@ module Hibiscus
 
       # simple IBAN format check taken from http://goo.gl/xsNXen:
       # - the leading two characters must be letters, the rest numbers
+      # - two digits with the checksum follow
+      # - the remaining characters can be letters or numbers
       # - total length is between 15 (Norway) and 31 (Malta) characters
-      validates :iban, format: /\A[A-Z]{2}[0-9]{13,29}\z/
+      validates :iban, format: /\A[A-Z]{2}[0-9]{2}[A-Z0-9]{11,27}\z/
 
       validates :label, presence: true
       validates :customer_number, numericality: true
