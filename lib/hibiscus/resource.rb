@@ -1,13 +1,8 @@
-require 'active_model'
 require 'money'
-
-I18n.enforce_available_locales = false
 
 module Hibiscus
   class Resource
 
-    include ActiveModel::Validations
-    
     def get(*args)
       client.get(*args)
     end

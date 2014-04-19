@@ -5,12 +5,21 @@ require 'hibiscus/account'
 module Hibiscus
   describe Account do
     
-    let(:account) { Hibiscus::Account.new({}) }
+    let(:account) { Hibiscus::Account.new }
 
     def stub_client_response(response)
       client_double = double('Client')
       client_double.stub(:get) { response }
       account.stub(:client).and_return(client_double)
+    end
+
+    describe "#valid?" do
+      it "uses Account::Validator" do
+        stub_client_response([])
+        Account::Validator.should_receive(:new).with(account.attrs).and_call_original
+        Account::Validator.any_instance.should_receive(:valid?)
+        account.valid?
+      end
     end
 
     describe "#all" do
@@ -22,7 +31,19 @@ module Hibiscus
       end
 
       it "returns account objects" do
-        response = [{"bezeichnung"=>"Magic-Konto", 
+        client_double = double('Client')
+        client_double.should_receive(:get).with('/konto/list').and_return([{}])
+        account.stub(:client).and_return(client_double)
+        account.all.first.should be_instance_of Hibiscus::Account
+      end
+      
+    end
+
+    # FIXME test these without going through #all
+    describe "#all, returned response" do
+
+      let(:valid_api_response) do
+        [{"bezeichnung"=>"Magic-Konto", 
           "bic"=>"MYBANKXXXXX", 
           "blz"=>"12345678", 
           "iban"=>"AA12345678901234567890", 
@@ -35,9 +56,17 @@ module Hibiscus
           "saldo_datum"=>"2014-04-17 09:10:50.0", 
           "waehrung"=>"EUR"
         }]
-        stub_client_response(response)
+      end
+
+      it "returns account objects" do
+        stub_client_response(valid_api_response)
         first = account.all.first
         first.should be_instance_of Hibiscus::Account
+      end
+
+      it "maps api data correctly" do
+        stub_client_response(valid_api_response)
+        first = account.all.first
         first.id.should == 1
         first.bic.should == "MYBANKXXXXX"
         first.iban.should == "AA12345678901234567890"
@@ -47,9 +76,26 @@ module Hibiscus
         first.balance.cents.should == -10001
         first.balance.currency.should == "EUR"
         first.balance_date.should == Time.parse("2014-04-17 09:10:50.0")
-        first.should be_valid
       end
+
     end
 
-  end
+    describe "dynamic attribute readers" do
+      it "has methods for each attribute" do
+        account = Account.new(foo: "bar")
+        account.foo.should == "bar"
+      end
+      it "works when attribute keys are strings" do
+        account = Account.new("foo" => "bar")
+        account.foo.should == "bar"
+      end
+      it "raises NoMethodError for unknown attributes" do
+        account = Account.new(foo: "bar")
+        expect { account.baz }.to raise_error(NoMethodError, /baz/)
+      end
+    end    
+
+
+ end
+
 end

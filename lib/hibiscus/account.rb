@@ -1,46 +1,46 @@
+require 'hibiscus/account/validator'
+
 module Hibiscus
   
   class Account < Resource
 
-    attr_accessor :id, :bic, :label, :iban, :customer_number, :holder_name, :balance, :balance_date
+    attr_reader :attrs
+    
+    class << self
 
-    class MoneyValidator < ActiveModel::EachValidator
-      def validate_each(record, attribute, value)
-        record.errors.add attribute, "must be a money object" unless value.is_a?(Money)
+      # create an instance from API response attributes (which need to be mapped)
+      def new_from_response(attrs)
+        mapped_attrs = {}
+        mapped_attrs[:id]               = attrs["id"].to_i
+        mapped_attrs[:bic]              = attrs["bic"]
+        mapped_attrs[:label]            = attrs["bezeichnung"]
+        mapped_attrs[:iban]             = attrs["iban"]
+        mapped_attrs[:customer_number]  = attrs["kundennummer"]
+        mapped_attrs[:holder_name]      = attrs["name"]
+        if attrs["saldo"]
+          # we rely on hibiscus server passing the saldo in the format "[-]100.50"
+          mapped_attrs[:balance]          = Money.new(attrs["saldo"].sub('.', ''), attrs["waehrung"])
+        end
+        if attrs["saldo_datum"]
+          mapped_attrs[:balance_date]     = Time.parse(attrs["saldo_datum"])
+        end
+        new(mapped_attrs)
+      end
+
+      def requests
+        {
+          all: '/konto/list'
+        }
       end
     end
-
-    validates :id, numericality: true
-    validates :id, inclusion: (1..1_000)
-    validates :bic, format: /\A[A-Z]{8,11}\z/
-    # simple IBAN format check taken from http://goo.gl/xsNXen:
-    # - the leading two characters must be letters, the rest numbers
-    # - total length is between 15 (Norway) and 31 (Malta) characters
-    validates :iban, format: /\A[A-Z]{2}[0-9]{13,29}\z/
-    validates :label, presence: true
-    validates :customer_number, numericality: true
-    validates :holder_name, presence: true
-    validates :balance, money: true
-    validates :balance_date, presence: true
 
     def initialize(attrs = {})
-      unless attrs.empty? # TEMP HACK
-        @id               = attrs["id"].to_i
-        @bic              = attrs["bic"]
-        @label            = attrs["bezeichnung"]
-        @iban             = attrs["iban"]
-        @customer_number  = attrs["kundennummer"]
-        @holder_name      = attrs["name"]
-        # we rely on hibiscus server passing the saldo in the format "[-]100.50"
-        @balance          = Money.new(attrs["saldo"].sub('.', ''), attrs["waehrung"])
-        @balance_date     = Time.parse(attrs["saldo_datum"])
-      end
+      # symbolize keys
+      @attrs = Hash[attrs.map { |k,v| [k.to_sym, v] }]
     end
 
-    def self.requests
-      {
-        all: '/konto/list'
-      }
+    def valid?
+      Validator.new(@attrs).valid?
     end
 
     def path_for(action)
@@ -49,12 +49,20 @@ module Hibiscus
 
     def all
       response = get(path_for(:all))
-      response.map { |attrs| self.class.new(attrs) }
+      response.map { |attrs| self.class.new_from_response(attrs) }
     end
 
     #def info
     #def transfers
     #statement_lines
+
+    private
+
+      # dynamic attribute readers
+      def method_missing(name)
+        super unless @attrs.has_key?(name)
+        @attrs[name]
+      end
 
   end
 end
