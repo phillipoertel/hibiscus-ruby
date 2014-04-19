@@ -1,4 +1,4 @@
-require 'hibiscus/client_config'
+require 'hibiscus/client/config'
 require 'hibiscus/client'
 require 'hibiscus/resource'
 require 'hibiscus/account'
