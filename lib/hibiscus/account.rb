@@ -5,7 +5,7 @@ module Hibiscus
   class Account < Resource
 
     attr_reader :attrs
-    
+
     class << self
 
       # create an instance from API response attributes (which need to be mapped)
@@ -25,6 +25,7 @@ module Hibiscus
           mapped_attrs[:balance_date]     = Time.parse(attrs["saldo_datum"])
         end
         new(mapped_attrs)
+        # TODO ensure data is valid!
       end
 
       def requests

@@ -16,6 +16,7 @@ module Hibiscus
       validates :id, numericality: true
       validates :id, inclusion: (1..1_000)
 
+      # TODO it's actually 8 OR 11 chars, not within.
       validates :bic, format: /\A[A-Z]{8,11}\z/
 
       # simple IBAN format check taken from http://goo.gl/xsNXen:
