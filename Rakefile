@@ -43,7 +43,9 @@ namespace :examples do
     #p Hibiscus::Transfer.new.delete(2) # interne überweisungs-id verwenden
     #p Hibiscus::Transfer.new.pending
     #p Hibiscus::StatementLine.new.search('paypal')
-    p Hibiscus::StatementLine.new.latest(2, 10)
+    Hibiscus::StatementLine.new.latest(2, 100).reverse.each do |line|
+      puts "%s %8s  %s: %s" % [line.date, line.amount, line.type, line.reference.gsub("\n", ";")]
+    end
   end
 
   desc "An example POST request"

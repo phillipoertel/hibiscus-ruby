@@ -47,11 +47,13 @@ module Hibiscus
     end
 
     def search(term)
-      get(path_for(:search).gsub('{term}', term.to_s))
+      response = get(path_for(:search).gsub('{term}', term.to_s))
+      response.map { |attrs| self.class.new_from_response(attrs) }
     end
     
     def latest(account_id, days = 30)
-      get(path_for(:latest).gsub('{account-id}', account_id.to_s).gsub('{days}', days.to_s))
+      response = get(path_for(:latest).gsub('{account-id}', account_id.to_s).gsub('{days}', days.to_s))
+      response.map { |attrs| self.class.new_from_response(attrs) }
     end
 
   end
