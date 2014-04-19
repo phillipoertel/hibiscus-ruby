@@ -17,7 +17,7 @@ module Hibiscus
     end
 
     describe "#all" do
-      it "calls get for '/konto/list' on the client" do
+      it "calls GET on the client with correct URL" do
         client = double('Client')
         client.should_receive(:get).with('/konto/list').and_return([])
         account.stub(:client) { client }

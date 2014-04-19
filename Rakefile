@@ -38,12 +38,12 @@ namespace :examples do
 
   desc "An example GET request"
   task get: :configure_client do
-    p Hibiscus::Account.new.all
+    #p Hibiscus::Account.new.all
     #p Hibiscus::Jobs.new.pending
     #p Hibiscus::Transfer.new.delete(2) # interne überweisungs-id verwenden
     #p Hibiscus::Transfer.new.pending
-    #p Hibiscus::StatementLines.new.search('paypal')
-    #p Hibiscus::StatementLines.new.latest(2, 5)
+    #p Hibiscus::StatementLine.new.search('paypal')
+    p Hibiscus::StatementLine.new.latest(2, 10)
   end
 
   desc "An example POST request"

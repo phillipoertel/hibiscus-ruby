@@ -56,7 +56,7 @@ Released under the [MIT License](http://opensource.org/licenses/MIT).
 
 - clean up resources and write unit tests
 - write integration tests against the Hibiscus server
-- set up nice references, like Account.find(1).statement_lines
+- set up nice references, like Account.find(1).statement_line
 - make Transfer#create nicer (Terminüberweisung)
 - add sanity checks to Transfer#create
 - convert server errors (Java Exceptions) into corresponding Ruby exceptions
