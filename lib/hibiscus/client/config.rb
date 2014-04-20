@@ -20,12 +20,12 @@ module Hibiscus
       private
 
         def verify_ssl_config
-          verify = options.has_key?(:verify_ssl) ? !!options[:verify_ssl] : defaults[:verify]
+          verify = !!options.fetch(:verify_ssl, defaults[:verify])
           { verify: verify }
         end
 
         def username_config
-          username = options.has_key?(:username) ? options[:username] : defaults[:basic_auth][:username]
+          username = options.fetch(:username, defaults[:basic_auth][:username])
           { username: username }
         end
 
@@ -34,7 +34,7 @@ module Hibiscus
         end
 
         def base_uri_config 
-          uri = options.has_key?(:base_uri) ? options[:base_uri] : defaults[:base_uri]
+          uri = options.fetch(:base_uri, defaults[:base_uri])
           { base_uri: uri }
         end
 
