@@ -18,49 +18,6 @@ module Hibiscus
       end
     end
 
-    describe ".new_from_response" do
-
-      let(:valid_api_response) do
-        {"bezeichnung"=>"Magic-Konto", 
-          "bic"=>"MYBANKXXXXX", 
-          "blz"=>"12345678", 
-          "iban"=>"AA12345678901234567890", 
-          "id"=>"1", 
-          "kontonummer"=>"1234567890", 
-          "kundennummer"=>"47114711", 
-          "name"=>"MUSTERMANN, MAX", 
-          "passport_class"=>"de.willuhn.jameica.hbci.passports.pintan.server.PassportImpl", 
-          "saldo"=>"-100.01", 
-          "saldo_datum"=>"2014-04-17 09:10:50.0", 
-          "waehrung"=>"EUR"
-        }
-      end
-
-      it "returns an account object" do
-        account = Account.new_from_response(valid_api_response)
-        account.should be_instance_of Hibiscus::Account
-      end
-
-      it "maps api data correctly" do
-        account = Account.new_from_response(valid_api_response)
-        account.id.should == 1
-        account.bic.should == "MYBANKXXXXX"
-        account.iban.should == "AA12345678901234567890"
-        account.label.should == "Magic-Konto"
-        account.customer_number.should == "47114711"
-        account.holder_name.should == "MUSTERMANN, MAX"
-        account.balance.cents.should == -10001
-        account.balance.currency.should == "EUR"
-        account.balance_date.should == Time.parse("2014-04-17 09:10:50.0")
-      end
-
-      it "raises an error when api data is invalid" do
-        invalid = valid_api_response.dup
-        invalid.delete("id")
-        expect { Account.new_from_response(invalid) }.to raise_error(Account::InvalidResponseData, '{:id=>["is not included in the list"]}')
-      end
-    end
-
   end
 
 end

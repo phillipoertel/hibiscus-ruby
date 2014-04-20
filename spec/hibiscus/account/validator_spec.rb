@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'hibiscus/resource'
 require 'hibiscus/account'
+require 'hibiscus/account/mapper'
 require 'hibiscus/account/validator'
 
 module Hibiscus
@@ -32,7 +33,7 @@ module Hibiscus
         "saldo_datum"=>"2014-04-17 09:10:50.0", 
         "waehrung"=>"EUR"
       }
-      Account.map_response_data(valid_api_response)
+      Account::Mapper.new.perform(valid_api_response)
     end
 
     context "correct API data given" do

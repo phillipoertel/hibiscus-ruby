@@ -36,7 +36,7 @@ module Hibiscus
          "zweck2"=>"Danke",
          "zweck"=>"Miete Geldspeicher"
        }
-      StatementLine.map_response_data(valid_api_response)
+      StatementLine::Mapper.new.perform(valid_api_response)
     end
 
     context "correct API data given" do

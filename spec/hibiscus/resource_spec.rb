@@ -8,10 +8,11 @@ module Hibiscus
     class DummyResource < Resource
       class Validator
         include ActiveModel::Validations
-
         def initialize(attrs = {})
           @attrs = attrs
         end
+      end
+      class Mapper
       end
     end
 
@@ -30,8 +31,7 @@ module Hibiscus
         resource = Resource.new(foo: "bar")
         expect { resource.baz }.to raise_error(NoMethodError, /baz/)
       end
-    end    
-
+    end
 
     describe "#valid?" do
       it "uses the corresponding Validator class" do
@@ -43,9 +43,22 @@ module Hibiscus
     end
 
     describe "#validator" do
-      it "caches the validator instance" do
+      it "caches the instance" do
         DummyResource::Validator.should_receive(:new).once.and_call_original
         2.times { resource.validator }
+      end
+      it "returns an instance" do
+        resource.validator.should be_instance_of DummyResource::Validator
+      end
+    end
+
+    describe "#mapper" do
+      it "caches the instance" do
+        DummyResource::Mapper.should_receive(:new).once.and_call_original
+        2.times { resource.mapper }
+      end
+      it "returns an instance" do
+        resource.mapper.should be_instance_of DummyResource::Mapper
       end
     end
 
@@ -61,6 +74,21 @@ module Hibiscus
       end
     end
 
+    describe ".new_from_response" do
+
+      it "returns an object of correct type" do
+        pending "valid_api_response missing"
+        resource = DummyResource.new_from_response(valid_api_response)
+        resource.should be_instance_of Hibiscus::DummyResource
+      end
+
+      it "raises an error when API data is invalid" do
+        pending "valid_api_response missing"
+        invalid = valid_api_response.dup
+        invalid.delete("id")
+        expect { Account.new_from_response(invalid) }.to raise_error(Account::InvalidResponseData, '{:id=>["is not included in the list"]}')
+      end
+    end
 
   end
 end
