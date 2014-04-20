@@ -7,42 +7,14 @@ module Hibiscus
     
     let(:account) { Hibiscus::Account.new }
 
-    describe "#valid?" do
-      it "uses Account::Validator" do
-        account.stub(:client)
-        Account::Validator.should_receive(:new).with(account.attrs).and_call_original
-        Account::Validator.any_instance.should_receive(:valid?)
-        account.valid?
-      end
-    end
-
-    # FIXME move this to a resource_spec (still to be created)
-    describe "#validator" do
-      it "caches the validator instance" do
-        Account::Validator.should_receive(:new).once.and_call_original
-        2.times { account.validator }
-      end
-    end
-
-    # FIXME move this to a resource_spec (still to be created)
-    describe "#errors" do
-      it "is empty when not validated" do
-        account.errors.should be_empty
-      end
-      it "is set when validated" do
-        Account::Validator.any_instance.stub(:valid?)
-        Account::Validator.any_instance.should_receive(:errors).and_return(["something"])
-        account.valid?
-        account.errors.should_not be_empty
-      end
-    end
-
-    describe "#all" do
-      it "calls GET on the client with correct URL" do
-        client = double('Client')
-        client.should_receive(:get).with('/konto/list').and_return([])
-        account.stub(:client) { client }
-        account.all
+    describe "API methods" do
+      describe "#all" do
+        it "calls GET on the client with correct URL" do
+          client = double('Client')
+          client.should_receive(:get).with('/konto/list').and_return([])
+          account.stub(:client) { client }
+          account.all
+        end
       end
     end
 
@@ -89,21 +61,6 @@ module Hibiscus
       end
     end
 
-    describe "dynamic attribute readers" do
-      it "has methods for each attribute" do
-        account = Account.new(foo: "bar")
-        account.foo.should == "bar"
-      end
-      it "works when attribute keys are strings" do
-        account = Account.new("foo" => "bar")
-        account.foo.should == "bar"
-      end
-      it "raises NoMethodError for unknown attributes" do
-        account = Account.new(foo: "bar")
-        expect { account.baz }.to raise_error(NoMethodError, /baz/)
-      end
-    end    
-
- end
+  end
 
 end
