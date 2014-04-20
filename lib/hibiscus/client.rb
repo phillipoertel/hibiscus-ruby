@@ -41,6 +41,7 @@ module Hibiscus
         uri     = request_uri(path)
         options = config.merge(options)
         json = http_lib.public_send(method, uri, options)
+        json.body.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
         JSON.parse(json)
       end
 
