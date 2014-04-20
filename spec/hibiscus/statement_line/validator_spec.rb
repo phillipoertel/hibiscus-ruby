@@ -19,7 +19,7 @@ module Hibiscus
 
     let(:valid_attrs) do
       valid_api_response = {
-        "art"=>"\xDCberweisung",
+         "art"=>"Überweisung",
          "betrag"=>"-156.9",
          "checksum"=>"835255347",
          "customerref"=>"NONREF",
@@ -48,13 +48,11 @@ module Hibiscus
     end
 
     context "BIC with 9 characters given (invalid)" do
-      let(:attrs) { r = valid_attrs.dup; r[:bic] = "ABCABCABC"; r }
+      let(:attrs) { r = valid_attrs.dup; r[:recipient_bic] = "ABCABCABC"; r }
       it "is invalid" do
-        pending "validations still need to be implemented."
-        
         validator = StatementLine::Validator.new(attrs)
         validator.should_not be_valid
-        validator.errors.messages.should == {:bic=>["BIC must be 8 or 11 characters in the range A-Z"]}
+        validator.errors.messages.should == {:recipient_bic=>["BIC must be 8 or 11 characters in the range A-Z"]}
       end
     end
 
