@@ -16,6 +16,27 @@ module Hibiscus
       end
     end
 
+    # FIXME move this to a resource_spec (still to be created)
+    describe "#validator" do
+      it "caches the validator instance" do
+        Account::Validator.should_receive(:new).once.and_call_original
+        2.times { account.validator }
+      end
+    end
+
+    # FIXME move this to a resource_spec (still to be created)
+    describe "#errors" do
+      it "is empty when not validated" do
+        account.errors.should be_empty
+      end
+      it "is set when validated" do
+        Account::Validator.any_instance.stub(:valid?)
+        Account::Validator.any_instance.should_receive(:errors).and_return(["something"])
+        account.valid?
+        account.errors.should_not be_empty
+      end
+    end
+
     describe "#all" do
       it "calls GET on the client with correct URL" do
         client = double('Client')

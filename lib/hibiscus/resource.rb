@@ -22,19 +22,24 @@ module Hibiscus
 
     end
 
+    def validator
+      @validator ||= begin
+        klass = self.class.const_get("Validator")
+        klass.new(@attrs)
+      end
+    end
+    
     def valid?
-      validator_class = self.class.const_get("Validator")
-      @validator = validator_class.new(@attrs)
-      @validator.valid?
+      validator.valid?
+    end
+
+    def errors
+      validator.errors
     end
 
     def initialize(attrs = {})
       # symbolize keys
       @attrs = Hash[attrs.map { |k,v| [k.to_sym, v] }]
-    end
-
-    def errors
-      @validator ? @validator.errors : []
     end
 
     def path_for(action)
