@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 require 'hibiscus/resource'
 require 'hibiscus/statement_line'
