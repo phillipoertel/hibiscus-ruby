@@ -9,7 +9,7 @@ namespace "spec" do
   
   RSpec::Core::RakeTask.new(:rspec)
   
-  desc "does mutation testing for selected classes"
+  desc "Does mutation testing"
   task :mutation do
     # find the classes we have specs for
     classes_with_specs = Dir.glob('spec/hibiscus/*_spec.rb')
@@ -32,32 +32,46 @@ end
 
 namespace :examples do
 
-  task :configure_client do
-    Hibiscus::Client.config = { password: ENV['PASSWORD'] }
-  end
-
-  desc "An example GET request"
-  task get: :configure_client do
-    #p Hibiscus::Account.new.all
-    #p Hibiscus::Jobs.new.pending
-    #p Hibiscus::Transfer.new.delete(2) # interne überweisungs-id verwenden
-    #p Hibiscus::Transfer.new.pending
-    #p Hibiscus::StatementLine.new.search('paypal')
-    Hibiscus::StatementLine.new.latest(2, 100).reverse.each do |line|
+  def print_statement_lines(lines)
+    lines.reverse.each do |line|
       puts "%s %8s  %s: %s" % [line.date, line.amount, line.type, line.reference.gsub("\n", ";")]
     end
   end
 
-  desc "An example POST request"
-  task post: :configure_client do
-    data = {
-      betrag: "0,01",
-      blz: "38070724", # Bankleitzahl des Gegenkontos
-      konto: "321487100", # Kontonummer des Gegenkontos
-      name: "Phillip Oertel", # Inhaber-Name des Gegenkontos
-      konto_id: "2", # ID des eigenen Kontos
-      zweck: "Hibiscus Test", # Verwendungszweck Zeile 1
-    }
-    p Hibiscus::Transfer.new.create(data)
+  task :configure_client do
+    Hibiscus::Client.config = { password: ENV['PASSWORD'] }
   end
+
+  namespace :account do
+    desc "Print all configured accounts"
+    task "all" do
+      p Hibiscus::Account.new.all
+    end
+  end
+  namespace :statement_line do
+    desc "List statement lines for account with ACCOUNT_ID=id (lines for last 30 days)"
+    task "latest" do
+      lines = Hibiscus::StatementLine.new.latest(ENV['ACCOUNT_ID'], 30)
+      print_statement_lines(lines)
+    end
+
+    desc "Search for statement lines with STRING=search_term"
+    task "search" do
+      lines = Hibiscus::StatementLine.new.search(ENV['STRING'])
+      print_statement_lines(lines)
+    end
+  end
+
+  # desc "An example POST request"
+  # task post: :configure_client do
+  #   data = {
+  #     betrag: "0,01",
+  #     blz: "38070724", # Bankleitzahl des Gegenkontos
+  #     konto: "321487100", # Kontonummer des Gegenkontos
+  #     name: "Phillip Oertel", # Inhaber-Name des Gegenkontos
+  #     konto_id: "2", # ID des eigenen Kontos
+  #     zweck: "Hibiscus Test", # Verwendungszweck Zeile 1
+  #   }
+  #   p Hibiscus::Transfer.new.create(data)
+  # end
 end
