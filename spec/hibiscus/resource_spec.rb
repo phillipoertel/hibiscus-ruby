@@ -52,13 +52,9 @@ module Hibiscus
       end
     end
 
-    describe "#mapper" do
-      it "caches the instance" do
-        DummyResource::Mapper.should_receive(:new).once.and_call_original
-        2.times { resource.mapper }
-      end
-      it "returns an instance" do
-        resource.mapper.should be_instance_of DummyResource::Mapper
+    describe ".mapper" do
+      it "returns a mapper instance" do
+        DummyResource.mapper.should be_instance_of DummyResource::Mapper
       end
     end
 
@@ -75,18 +71,36 @@ module Hibiscus
     end
 
     describe ".new_from_response" do
+      it "maps the passed attributes" do
+        mapper         = double("Mapper")
+        response_attrs = double("API response attributes")
+        mapper.should_receive(:perform).with(response_attrs).and_return({})
+        DummyResource.stub(:mapper).and_return(mapper)
+        DummyResource.new_from_response(response_attrs)
+      end
 
-      it "returns an object of correct type" do
-        pending "valid_api_response missing"
-        resource = DummyResource.new_from_response(valid_api_response)
-        resource.should be_instance_of Hibiscus::DummyResource
+      it "validates the mapped attributes" do
+        DummyResource::Mapper.any_instance.stub(:perform).and_return({})
+        resource = double("DummyResource")
+        resource.should_receive(:valid?).and_return(true)
+        DummyResource.stub(:new).and_return(resource)
+        DummyResource.new_from_response({})
+      end
+
+      it "calls new on the correct resource and returns that instance" do
+        DummyResource::Mapper.any_instance.stub(:perform).and_return({})
+        resource = double("DummyResource", :valid? => true)
+        DummyResource.should_receive(:new).and_return(resource)
+        DummyResource.new_from_response({}).should == resource
       end
 
       it "raises an error when API data is invalid" do
-        pending "valid_api_response missing"
-        invalid = valid_api_response.dup
-        invalid.delete("id")
-        expect { Account.new_from_response(invalid) }.to raise_error(Account::InvalidResponseData, '{:id=>["is not included in the list"]}')
+        DummyResource::Mapper.any_instance.stub(:perform).and_return({})
+        resource = double("DummyResource")
+        resource.should_receive(:valid?).and_return(false)
+        resource.stub_chain(:errors, :messages).and_return("Error messages")
+        DummyResource.stub(:new).and_return(resource)
+        expect { DummyResource.new_from_response({}) }.to raise_error(Hibiscus::Resource::InvalidResponseData, "Error messages")
       end
     end
 

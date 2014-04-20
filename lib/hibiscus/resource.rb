@@ -8,13 +8,13 @@ module Hibiscus
     class << self
 
       #
-      # Create an instance from API response attributes.
+      # Creates an instance from API response attributes.
       # Maps and validates the attributes, then returns a new instance of the correct type
       #
       # raises Hibiscus::Resource::InvalidResponseData when attributes are invalid.
       #
       def new_from_response(response_attrs)
-        mapped_attrs = map_response_data(response_attrs)
+        mapped_attrs = mapper.perform(response_attrs)
         object = new(mapped_attrs)
         if object.valid?
           object
@@ -23,19 +23,15 @@ module Hibiscus
         end
       end
 
-      def map_response_data(attrs)
-        mapper.perform(attrs)
-      end
-
+      # get the correct Mapper instance for my subclass (example: Hibiscus::Acount::Mapper)
       def mapper
-        @mapper ||= begin
-          klass = self.const_get("Mapper")
-          klass.new
-        end
+        klass = self.const_get("Mapper")
+        klass.new
       end
 
     end # end self
 
+    # get the correct Validator instance for my subclass (example: Hibiscus::Acount::Validator)
     def validator
       @validator ||= begin
         klass = self.class.const_get("Validator")
