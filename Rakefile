@@ -44,19 +44,20 @@ namespace :examples do
 
   namespace :account do
     desc "Print all configured accounts"
-    task "all" do
+    task all: :configure_client do
       p Hibiscus::Account.new.all
     end
   end
+  
   namespace :statement_line do
     desc "List statement lines for account with ACCOUNT_ID=id (lines for last 30 days)"
-    task "latest" do
+    task latest: :configure_client do
       lines = Hibiscus::StatementLine.new.latest(ENV['ACCOUNT_ID'], 30)
       print_statement_lines(lines)
     end
 
     desc "Search for statement lines with STRING=search_term"
-    task "search" do
+    task search: :configure_client do
       lines = Hibiscus::StatementLine.new.search(ENV['STRING'])
       print_statement_lines(lines)
     end
