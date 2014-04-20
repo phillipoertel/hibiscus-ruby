@@ -7,7 +7,7 @@ module Hibiscus
 
       def perform(attrs)
         {}.tap do |mapped_attrs| 
-          mapped_attrs[:type]     = attrs["art"] # TODO use type constants that can be i18ned instead.
+          mapped_attrs[:type] = attrs["art"] # TODO use type constants that can be i18ned instead.
           amount_in_cents = MoneyStringParser.to_cents(attrs["betrag"])
           mapped_attrs[:amount]   = Money.new(amount_in_cents, 'EUR') # only EUR supported atm.
           mapped_attrs[:checksum] = attrs["checksum"]
