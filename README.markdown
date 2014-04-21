@@ -10,7 +10,8 @@ hibiscus-ruby is a Ruby API client for the HBCI-compliant [Hibiscus payment serv
 
 ## Quick start
 
-	> irb -Ilib
+	> gem install hibiscus-ruby --pre
+	> irb
 
 	require 'hibiscus-ruby'
 
@@ -19,7 +20,7 @@ hibiscus-ruby is a Ruby API client for the HBCI-compliant [Hibiscus payment serv
 	  password: 'your hibiscus server password'
 	}
 
-	# get the list known accounts
+	# get all known accounts
 	p Hibiscus::Account.new.all
 
 ## API Documentation 
