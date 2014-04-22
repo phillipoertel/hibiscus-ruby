@@ -16,7 +16,6 @@ module Hibiscus
           mapped_attrs[:holder_name]     = attrs["name"]
 
           if attrs["saldo"]
-            # we rely on hibiscus server passing the saldo in the format "[-]100.50"
             cents = MoneyStringParser.to_cents(attrs["saldo"])
             mapped_attrs[:balance]       = Money.new(cents, attrs["waehrung"])
           end
