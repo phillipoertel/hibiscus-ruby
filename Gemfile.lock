@@ -40,7 +40,7 @@ GEM
     i18n (0.6.9)
     ice_nine (0.11.0)
     inflecto (0.0.2)
-    json (1.8.1)
+    json (1.8.6)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     minitest (5.3.3)
@@ -106,3 +106,6 @@ DEPENDENCIES
   mutant-rspec
   rspec
   rspec-core (= 2.14.8)
+
+BUNDLED WITH
+   2.0.1
